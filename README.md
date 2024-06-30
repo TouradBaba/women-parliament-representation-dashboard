@@ -31,6 +31,8 @@ women-parliament-representation-dashboard/
 │   └── regions_data.csv
 │
 └── dashboard_preview.png
+│
+└── dashboard_preview2.png
 ```
 
 - **app/**: Contains the main application files.
@@ -42,12 +44,16 @@ women-parliament-representation-dashboard/
   - **regions_data.csv**: Dataset specifically for regional data used in the bar chart.
 
 - **dashboard_preview.png**: Preview image of the dashboard.
+- **dashboard_preview.png2**: Preview image of the dashboard when selecting a country
 
 ## Getting Started
 
 ### Preview image of the dashboard when selecting a country
 ![Dashboard Preview](dashboard_preview2.png)
 
+To access the live dashboard hosted on PythonAnywhere:
+
+1. Visit the dashboard at [Women in Parliament Dashboard](https://tourad.pythonanywhere.com/).
 
 To run the dashboard locally:
 
