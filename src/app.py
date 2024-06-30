@@ -5,7 +5,7 @@ import plotly.express as px
 import pandas as pd
 
 # Load countries data
-csv_path = Path(__file__).parent.parent / 'data' / 'cleaned_df.csv'
+csv_path = 'https://raw.githubusercontent.com/TouradBaba/women-parliament-representation-dashboard/main/data/cleaned_df.csv'
 df = pd.read_csv(csv_path, encoding='latin1')
 
 # Find the latest year for each country
@@ -18,7 +18,7 @@ latest_data = pd.merge(df, latest_years, on=['Region/Country/Area', 'Year'], how
 regions = latest_data['Region/Country/Area'].unique()
 
 # Load regions data specifically for regions (Region, Year, Value)
-csv_path2 = Path(__file__).parent.parent / 'data' / 'regions_data.csv'
+csv_path2 = 'https://raw.githubusercontent.com/TouradBaba/women-parliament-representation-dashboard/main/data/regions_data.csv'
 df2 = pd.read_csv(csv_path2, encoding='latin1')
 # Find the latest year for each region
 latest_years_regions = df2.groupby('Region')['Year'].max().reset_index()
