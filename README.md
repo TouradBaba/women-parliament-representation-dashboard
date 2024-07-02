@@ -3,6 +3,7 @@
 ![Dashboard Preview](dashboard_preview.png)
 
 This repository contains a dashboard built with Dash and Plotly for visualizing women's representation in parliaments worldwide.
+You can visit the dashboard hosted on PythonAnywhere from this [link](https://tourad.pythonanywhere.com/).
 
 ## Features
 
