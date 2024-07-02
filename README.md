@@ -45,7 +45,7 @@ women-parliament-representation-dashboard/
   - **regions_data.csv**: Dataset specifically for regional data used in the bar chart.
 
 - **dashboard_preview.png**: Preview image of the dashboard.
-- **dashboard_preview.png2**: Preview image of the dashboard when selecting a country
+- **dashboard_preview.png2**: Preview image of the dashboard when selecting a country.
 
 ## Getting Started
 
