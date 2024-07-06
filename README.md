@@ -49,6 +49,9 @@ women-parliament-representation-dashboard/
 
 ## Getting Started
 
+### Percentage Over Years
+![Dashboard Preview](percentage_over_years.gif)
+
 ### Preview image of the dashboard when selecting a country
 ![Dashboard Preview](dashboard_preview2.png)
 
