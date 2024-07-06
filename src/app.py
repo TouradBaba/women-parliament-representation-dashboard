@@ -28,8 +28,8 @@ latest_data_regions = pd.merge(df2, latest_years_regions, on=['Region', 'Year'],
 # Sort the data by 'Value' in descending order
 latest_data_regions_sorted = latest_data_regions.sort_values(by='Value', ascending=False)
 
-# Initialize Dash app
-app = dash.Dash(__name__)
+# Define available years for the flat map animation
+available_years = [2000, 2005, 2010, 2015, 2018, 2020, 2021, 2022, 2023]
 
 # Custom CSS stylesheet for styling with Bootstrap and Font Awesome
 external_stylesheets = [
@@ -37,7 +37,7 @@ external_stylesheets = [
     'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css'
 ]
 
-# Set external stylesheets in Dash app
+# # Initialize Dash app and Set external stylesheets in Dash app
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 # Define app layout with custom styling
@@ -76,8 +76,41 @@ app.layout = html.Div(
                             placeholder="Select a country",
                             className='mb-3'
                         ),
-                        dcc.Graph(id='line-chart', className='line-chart')
+                        dcc.Graph(id='line-chart', className='line-chart'),
+                        html.Div(
+                            dcc.RangeSlider(
+                                id='year-slider',
+                                min=2000,
+                                max=2023,
+                                value=[2000, 2023],
+                                marks={2000: '2000', 2005: '2005', 2010: '2010', 2015: '2015',
+                                       2018: '2018', 2020: '2020', 2021: '2021', 2022: '2022', 2023: '2023'},
+                                step=None,
+                                className='mb-3'
+                            ),
+                            style={'marginTop': '20px'}
+                        )
                     ]
+                )
+            ]
+        ),
+
+        html.Hr(className='my-4'),
+
+        html.Div(
+            className='row',
+            children=[
+                html.Div(
+                    className='col-md-12 flat-map-container',
+                    children=[
+                        dcc.Graph(id='flat-map'),
+                        dcc.Interval(
+                            id='interval-component',
+                            interval=1000,  # in milliseconds
+                            n_intervals=0
+                        )
+                    ],
+                    style={'height': '800px'}
                 )
             ]
         ),
@@ -109,17 +142,17 @@ app.layout = html.Div(
     ]
 )
 
-
 # Callback to update the line chart and country details based on dropdown or map selection
 @app.callback(
     [Output('line-chart', 'figure'),
      Output('country-details', 'children'),
      Output('country-dropdown', 'value')],
     [Input('country-dropdown', 'value'),
-     Input('map', 'clickData')],
+     Input('map', 'clickData'),
+     Input('year-slider', 'value')],
     [State('country-dropdown', 'value')]
 )
-def update_line_chart_and_details(country, clickData, current_dropdown_value):
+def update_line_chart_and_details(country, clickData, selected_years, current_dropdown_value):
     triggered_by = dash.callback_context.triggered[0]['prop_id'].split('.')[0]
 
     if triggered_by == 'map' and clickData is not None:
@@ -129,7 +162,8 @@ def update_line_chart_and_details(country, clickData, current_dropdown_value):
     country_details = html.P("Click on a country to see details.", className='placeholder-text')
 
     if country:
-        selected_data_chart = df[df['Region/Country/Area'] == country]
+        selected_data_chart = df[(df['Region/Country/Area'] == country) &
+                                 (df['Year'] >= selected_years[0]) & (df['Year'] <= selected_years[1])]
 
         if not selected_data_chart.empty:
             line_chart_figure = px.line(
@@ -153,19 +187,17 @@ def update_line_chart_and_details(country, clickData, current_dropdown_value):
 
     return line_chart_figure, country_details, country
 
-# Callback to update the map and rotate it
+# Callback to update the map based on country selection
 @app.callback(
     Output('map', 'figure'),
     [Input('country-dropdown', 'value')]
 )
 def update_map(selected_country):
-    # Filter data to show only the selected country
     if selected_country:
         selected_data_map = latest_data[latest_data['Region/Country/Area'] == selected_country]
     else:
         selected_data_map = latest_data
 
-    # Create the map figure
     map_figure = px.choropleth(
         selected_data_map,
         locations='Region/Country/Area',
@@ -201,6 +233,41 @@ def update_map(selected_country):
     )
 
     return map_figure
+
+# Callback to update the flat map based on the interval
+@app.callback(
+    Output('flat-map', 'figure'),
+    [Input('interval-component', 'n_intervals')]
+)
+def update_flat_map(n_intervals):
+    year_index = n_intervals % len(available_years)
+    current_year = available_years[year_index]
+
+    filtered_data = df[df['Year'] == current_year]
+
+    flat_map_figure = px.choropleth(
+        filtered_data,
+        locations='Region/Country/Area',
+        locationmode='country names',
+        color='Value',
+        hover_name='Region/Country/Area',
+        color_continuous_scale='Viridis',
+        title=f'Women Representation in Parliaments - {current_year}<br><sub>Note: For uncolored countries, no data '
+              f'is available for that year.</sub>'
+    )
+
+    flat_map_figure.update_layout(
+        geo=dict(
+            showcoastlines=True,
+            coastlinecolor="Gray",
+            showland=True,
+            landcolor="LightGray"
+        ),
+        margin={"r": 0, "t": 60, "l": 0, "b": 0},
+        height=800
+    )
+
+    return flat_map_figure
 
 
 if __name__ == '__main__':
