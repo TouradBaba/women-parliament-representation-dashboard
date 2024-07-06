@@ -34,6 +34,8 @@ women-parliament-representation-dashboard/
 └── dashboard_preview.png
 │
 └── dashboard_preview2.png
+│
+└── percentage_over_years.gif
 ```
 
 - **app/**: Contains the main application files.
@@ -46,6 +48,7 @@ women-parliament-representation-dashboard/
 
 - **dashboard_preview.png**: Preview image of the dashboard.
 - **dashboard_preview.png2**: Preview image of the dashboard when selecting a country.
+- **percentage_over_years.gif**: GIF that shows variations in percentage over the years.
 
 ## Getting Started
 
@@ -57,7 +60,7 @@ women-parliament-representation-dashboard/
 
 To access the live dashboard hosted on PythonAnywhere:
 
-1. Visit the dashboard at [Women in Parliament Dashboard](https://tourad.pythonanywhere.com/).
+Visit the dashboard at [Women in Parliament Dashboard](https://tourad.pythonanywhere.com/).
 
 To run the dashboard locally:
 
