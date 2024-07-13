@@ -1,89 +1,87 @@
-# Population and GDP Data Visualization Dashboard
+# Women in Parliament Dashboard
 
-![Population and GDP Data Visualization Dashboard](Screenshots/Population1.png)
+![Dashboard Preview](dashboard_preview.png)
 
-This repository contains a Dash web application built to visualize population and GDP data interactively. The app provides insights into demographic trends, economic indicators, and geographic distributions using interactive maps and various types of charts.
+This repository contains a dashboard built with Dash and Plotly for visualizing women's representation in parliaments worldwide.
+You can visit the dashboard hosted on PythonAnywhere from this [link](https://tourad.pythonanywhere.com/).
 
 ## Features
 
-- **Interactive Dashboards**: Explore population and GDP trends by country and region interactively.
-- **Geospatial Visualization**: Utilize interactive maps to visualize population density and GDP distribution.
-- **Multi-page Application**: Navigate between different sections dedicated to population and GDP data.
-
-## Deployment
-
-The application is deployed on Heroku and accessible at [Population and GDP Data Visualization Dashboard](https://dash-app1-1d713809e6c0.herokuapp.com/).
+- Interactive map visualization displaying women's representation data by country.
+- Line chart showing trends in women's representation over time for selected countries.
+- Bar chart displaying women's representation by region.
+- Dropdown menu for selecting specific countries to view detailed representation data.
+- Built-in filtering and selection based on user interaction with the map.
 
 ## Data Sources
 
-- Population Data: [UN Data - SYB66_1_202310_Population, Surface Area and Density](https://data.un.org/_Docs/SYB/CSV/SYB66_1_202310_Population,%20Surface%20Area%20and%20Density.csv)
-- GDP Data: [UN Data - SYB66_230_202310_GDP and GDP Per Capita](http://data.un.org/_Docs/SYB/CSV/SYB66_230_202310_GDP%20and%20GDP%20Per%20Capita.csv)
-- Land Area Data: [Our World in Data - Land Area](https://ourworldindata.org/grapher/land-area-km)
+The data used in this dashboard is sourced from the United Nations Statistics Division (UNSD) via the following link:
+- [Seats held by women in Parliament](https://data.un.org/_Docs/SYB/CSV/SYB66_317_202310_Seats%20held%20by%20women%20in%20Parliament.csv)
 
-## Structure of the Repository
+## Repository Structure
 
-- `Jupyter_Notebooks/`: Contains Jupyter notebooks used for data exploration and analysis.
-- `assets/`: Stores some screenshots and the Solar theme from [Bootswatch](https://bootswatch.com/).
-- `data/`: Holds cleaned and processed datasets used by the application.
-- `pages/`: Includes Python scripts defining different pages of the Dash app.
-- `.gitattributes`: Git attributes configuration file.
-- `.gitignore`: Git ignore configuration file.
-- `Procfile`: Heroku configuration file specifying the application server.
-- `app.py`: Main Python file defining the Dash application and its layout.
-- `requirements.txt`: List of Python dependencies required to run the application.
-- `runtime.txt`: Specifies the Python runtime version used by the application.
+```
+women-parliament-representation-dashboard/
+│
+├── app/
+│   ├── app.py
+│   └── requirements.txt
+│
+├── data/
+│   ├── cleaned_df.csv
+│   └── regions_data.csv
+│
+└── dashboard_preview.png
+│
+└── dashboard_preview2.png
+│
+└── percentage_over_years.gif
+```
 
-## Screenshots
+- **app/**: Contains the main application files.
+  - **app.py**: Python script for running the Dash application.
+  - **requirements.txt**: List of Python dependencies required for the application.
 
-### Population Page
+- **data/**: Contains the datasets used in the dashboard.
+  - **cleaned_df.csv**: Dataset with cleaned data, including coordinates.
+  - **regions_data.csv**: Dataset specifically for regional data used in the bar chart.
 
-*Population map when selecting a country*
+- **dashboard_preview.png**: Preview image of the dashboard.
+- **dashboard_preview.png2**: Preview image of the dashboard when selecting a country.
+- **percentage_over_years.gif**: GIF that shows variations in percentage over the years.
 
-![Population Page](Screenshots/Population2.png)
+## Getting Started
 
+### Percentage Over Years
+![Dashboard Preview](percentage_over_years.gif)
 
-*Population heatmap and other figures*
-![Population Page](Screenshots/Population3.png)
+### Preview image of the dashboard when selecting a country
+![Dashboard Preview](dashboard_preview2.png)
 
+To access the live dashboard hosted on PythonAnywhere:
 
-*Population heatmap and other figures when selecting a country
-![Population Page](Screenshots/Population4.png)*
+Visit the dashboard at [Women in Parliament Dashboard](https://tourad.pythonanywhere.com/).
 
-
-### GDP Page
-
-*GIF that show countries GDP variation over time*
-![GDP Page](Screenshots/GDP_GIF.gif)
-
-*GDP map*
-
-![GDP Page](Screenshots/GDP1.png)
-
-*GDP map when selecting a country*
-
-![GDP Page](Screenshots/GDP2.png)
-
-*Other figures for GDP*
-![GDP Page](Screenshots/GDP2.png)
-
-
-## Installation and Setup
-
-To run this application locally:
+To run the dashboard locally:
 
 1. Clone this repository:
-   ```bash
-   git clone https://github.com/TouradBaba/exploratory_data_analysis_and_visualization.git
-   cd your-repository
+   ```
+   git clone https://github.com/TouradBaba/women-parliament-representation-dashboard.git
+   ```
+   
+2. Navigate to the project directory:
+   ```
+   cd women-parliament-representation-dashboard
    ```
 
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
+3. Install the dependencies:
+   ```
+   pip install -r app/requirements.txt
    ```
 
-3. Run the application:
-   ```bash
-   python app.py
+4. Run the application:
    ```
-   Open http://127.0.0.1:8050/ in your web browser to view the app.
+   python app/app.py
+   ```
+
+5. Open a web browser and go to `http://127.0.0.1:8050/` to view the dashboard.
