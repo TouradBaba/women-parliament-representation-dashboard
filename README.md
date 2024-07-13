@@ -66,6 +66,7 @@ The application is deployed on Heroku and accessible at [Population and GDP Data
 *Other figures for GDP*
 ![GDP Page](Screenshots/GDP2.png)
 
+
 ## Installation and Setup
 
 To run this application locally:
