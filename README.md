@@ -81,12 +81,12 @@ To run the dashboard locally:
 
 3. Install the dependencies:
    ```
-   pip install -r app/requirements.txt
+   pip install -r requirements.txt
    ```
 
 4. Run the application:
    ```
-   python app/app.py
+   python app.py
    ```
 
 5. Open a web browser and go to `http://127.0.0.1:8050/` to view the dashboard.
