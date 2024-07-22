@@ -28,7 +28,7 @@ app = dash.Dash(__name__, suppress_callback_exceptions=True)
 server = app.server
 
 # Load figure template
-load_figure_template("darkly")
+load_figure_template("yeti")
 
 app.layout = html.Div(
     className='container-fluid',
@@ -286,4 +286,4 @@ def play_pause_animation(n_clicks, is_disabled):
 
 
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=True)
