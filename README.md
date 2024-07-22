@@ -25,7 +25,8 @@ The data used in this dashboard is sourced from the United Nations Statistics Di
 
 ```
 women-parliament-representation-dashboard/
-│
+│────assets/
+├──── bootstrap.css
 ├──── app.py
 │──── requirements.txt
 │──── data_preparation.ipynb
@@ -42,14 +43,12 @@ women-parliament-representation-dashboard/
 └── .gitattributes
 
 ```
-
+- **assets/**: Stores the slate theme from [Bootswatch](https://bootswatch.com/).
 - **app.py**: Python script for running the Dash application.
 - **requirements.txt**: List of Python dependencies required for the application.
-
 - **data/**: Contains the datasets used in the dashboard.
   - **cleaned_df.csv**: Dataset with cleaned data, including coordinates.
   - **regions_data.csv**: Dataset specifically for regional data used in the bar chart.
-
 - **images/**: Contains scrrenshots of the app.
   - **dashboard_preview.png**: Preview image of the dashboard.
   - **dashboard_preview.png2**: Preview image of the dashboard when selecting a country.
