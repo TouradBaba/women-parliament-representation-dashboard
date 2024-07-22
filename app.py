@@ -77,7 +77,7 @@ app.layout = html.Div(
                                 step=None,
                                 className='mb-3'
                             ),
-                            style={'marginTop': '30px'}  # Add space between dropdown and slider
+                            style={'marginTop': '30px'}
                         )
                     ]
                 )
