@@ -3,55 +3,45 @@ from dash import dcc, html
 from dash.dependencies import Input, Output, State
 import plotly.express as px
 import pandas as pd
+from dash_bootstrap_templates import load_figure_template
 
-# Load countries data
+# Load data
 csv_path = 'https://raw.githubusercontent.com/TouradBaba/women-parliament-representation-dashboard/main/data/cleaned_df.csv'
 df = pd.read_csv(csv_path, encoding='latin1')
 
 # Find the latest year for each country
 latest_years = df.groupby('Region/Country/Area')['Year'].max().reset_index()
-
-# Merge to get the latest data for each country
 latest_data = pd.merge(df, latest_years, on=['Region/Country/Area', 'Year'], how='inner')
-
-# Get unique countries for dropdown options
 regions = latest_data['Region/Country/Area'].unique()
 
-# Load regions data specifically for regions (Region, Year, Value)
+# Load regions data
 csv_path2 = 'https://raw.githubusercontent.com/TouradBaba/women-parliament-representation-dashboard/main/data/regions_data.csv'
 df2 = pd.read_csv(csv_path2, encoding='latin1')
-# Find the latest year for each region
 latest_years_regions = df2.groupby('Region')['Year'].max().reset_index()
-# Merge to get the latest data for each region
 latest_data_regions = pd.merge(df2, latest_years_regions, on=['Region', 'Year'], how='inner')
-
-# Sort the data by 'Value' in descending order
 latest_data_regions_sorted = latest_data_regions.sort_values(by='Value', ascending=False)
 
-# Define available years for the flat map animation
 available_years = [2000, 2005, 2010, 2015, 2018, 2020, 2021, 2022, 2023]
 
-# Custom CSS stylesheet for styling with Bootstrap and Font Awesome
-external_stylesheets = [
-    'https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/flatly/bootstrap.min.css',
-    'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css'
-]
+# Load figure template
+load_figure_template("superhero")
+# Initialize the app
+app = dash.Dash(__name__, external_stylesheets=[
+    "https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/superhero/bootstrap.min.css"
+], suppress_callback_exceptions=True)
+server = app.server
 
-# # Initialize Dash app and Set external stylesheets in Dash app
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
-# Define app layout with custom styling
 app.layout = html.Div(
     className='container-fluid',
     children=[
         html.Div(
             className='jumbotron bg-dark text-white',
             children=[
-                html.H1("Women Representation in Parliaments Dashboard", className='display-4'),
+                html.H1("Women Representation in Parliaments Dashboard", className='display-4',
+                        style={'fontSize': 50, 'textAlign': 'center'}),
                 html.P(
-                    "Click on a country on the map or select it "
-                    "to see details and its representation in parliaments over time.",
-                    className='lead'
+                    "Click on a country on the map or select it to see details and its representation in parliaments over time.",
+                    className='lead', style={'textAlign': 'center'}
                 )
             ]
         ),
@@ -76,19 +66,17 @@ app.layout = html.Div(
                             placeholder="Select a country",
                             className='mb-3'
                         ),
-                        dcc.Graph(id='line-chart', className='line-chart'),
+                        dcc.Graph(id='line-chart', className='line-chart', style={'display': 'none'}),
                         html.Div(
                             dcc.RangeSlider(
                                 id='year-slider',
                                 min=2000,
                                 max=2023,
                                 value=[2000, 2023],
-                                marks={2000: '2000', 2005: '2005', 2010: '2010', 2015: '2015',
-                                       2018: '2018', 2020: '2020', 2021: '2021', 2022: '2022', 2023: '2023'},
+                                marks={year: str(year) for year in available_years},
                                 step=None,
                                 className='mb-3'
-                            ),
-                            style={'marginTop': '20px'}
+                            )
                         )
                     ]
                 )
@@ -103,14 +91,24 @@ app.layout = html.Div(
                 html.Div(
                     className='col-md-12 flat-map-container',
                     children=[
-                        dcc.Graph(id='flat-map'),
+                        html.P("Women Representation Percentage Over Years",
+                               className='lead smaller-text', style={'fontSize': 25, 'textAlign': 'center'}),
+                        html.P("Note: For uncolored countries, no data is available for that year.",
+                               className='text-muted', style={'fontSize': 17, 'textAlign': 'center'}),
+                        html.Div(
+                            children=[
+                                html.Button('Play', id='play-pause-button', className='btn btn-primary mb-2 btn-lg')
+                            ],
+                            style={'textAlign': 'center', 'marginBottom': '10px'}
+                        ),
+                        dcc.Graph(id='flat-map', style={'height': '800px'}),
                         dcc.Interval(
                             id='interval-component',
                             interval=1000,  # in milliseconds
-                            n_intervals=0
+                            n_intervals=0,
+                            disabled=True
                         )
-                    ],
-                    style={'height': '800px'}
+                    ]
                 )
             ]
         ),
@@ -142,15 +140,16 @@ app.layout = html.Div(
     ]
 )
 
-# Callback to update the line chart and country details based on dropdown or map selection
+
 @app.callback(
-    [Output('line-chart', 'figure'),
-     Output('country-details', 'children'),
-     Output('country-dropdown', 'value')],
-    [Input('country-dropdown', 'value'),
-     Input('map', 'clickData'),
-     Input('year-slider', 'value')],
-    [State('country-dropdown', 'value')]
+    Output('line-chart', 'figure'),
+    Output('line-chart', 'style'),
+    Output('country-details', 'children'),
+    Output('country-dropdown', 'value'),
+    Input('country-dropdown', 'value'),
+    Input('map', 'clickData'),
+    Input('year-slider', 'value'),
+    State('country-dropdown', 'value')
 )
 def update_line_chart_and_details(country, clickData, selected_years, current_dropdown_value):
     triggered_by = dash.callback_context.triggered[0]['prop_id'].split('.')[0]
@@ -159,6 +158,7 @@ def update_line_chart_and_details(country, clickData, selected_years, current_dr
         country = clickData['points'][0]['location']
 
     line_chart_figure = {}
+    line_chart_style = {'display': 'none'}
     country_details = html.P("Click on a country to see details.", className='placeholder-text')
 
     if country:
@@ -173,6 +173,7 @@ def update_line_chart_and_details(country, clickData, selected_years, current_dr
                 title=f'Women Representation in Parliaments over Time - {country}',
                 labels={'Year': 'Year', 'Value': 'Percentage (%)'}
             )
+            line_chart_style = {'display': 'block'}
 
             latest_data_country = latest_data[latest_data['Region/Country/Area'] == country]
             if not latest_data_country.empty:
@@ -185,12 +186,12 @@ def update_line_chart_and_details(country, clickData, selected_years, current_dr
                     html.P(f"Year: {latest_year_country}", className='country-year')
                 ], className='country-details')
 
-    return line_chart_figure, country_details, country
+    return line_chart_figure, line_chart_style, country_details, country
 
-# Callback to update the map based on country selection
+
 @app.callback(
     Output('map', 'figure'),
-    [Input('country-dropdown', 'value')]
+    Input('country-dropdown', 'value')
 )
 def update_map(selected_country):
     if selected_country:
@@ -234,14 +235,17 @@ def update_map(selected_country):
 
     return map_figure
 
-# Callback to update the flat map based on the interval
+
 @app.callback(
     Output('flat-map', 'figure'),
-    [Input('interval-component', 'n_intervals')]
+    Input('interval-component', 'n_intervals')
 )
 def update_flat_map(n_intervals):
-    year_index = n_intervals % len(available_years)
-    current_year = available_years[year_index]
+    if n_intervals == 0:
+        current_year = 2018 # Default year
+    else:
+        year_index = n_intervals % len(available_years)
+        current_year = available_years[year_index]
 
     filtered_data = df[df['Year'] == current_year]
 
@@ -252,8 +256,7 @@ def update_flat_map(n_intervals):
         color='Value',
         hover_name='Region/Country/Area',
         color_continuous_scale='Viridis',
-        title=f'Women Representation in Parliaments - {current_year}<br><sub>Note: For uncolored countries, no data '
-              f'is available for that year.</sub>'
+        title=f'Percentage {current_year}'
     )
 
     flat_map_figure.update_layout(
@@ -268,6 +271,19 @@ def update_flat_map(n_intervals):
     )
 
     return flat_map_figure
+
+
+@app.callback(
+    [Output('interval-component', 'disabled'),
+     Output('play-pause-button', 'children')],
+    [Input('play-pause-button', 'n_clicks')],
+    [State('interval-component', 'disabled')]
+)
+def play_pause_animation(n_clicks, is_disabled):
+    if n_clicks is None:
+        return True, 'Play'
+
+    return not is_disabled, 'Pause' if is_disabled else 'Play'
 
 
 if __name__ == '__main__':
