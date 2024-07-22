@@ -9,17 +9,9 @@ from dash_bootstrap_templates import load_figure_template
 csv_path = 'https://raw.githubusercontent.com/TouradBaba/women-parliament-representation-dashboard/main/data/cleaned_df.csv'
 df = pd.read_csv(csv_path, encoding='latin1')
 
-# Find the latest year for each country
-latest_years = df.groupby('Region/Country/Area')['Year'].max().reset_index()
-latest_data = pd.merge(df, latest_years, on=['Region/Country/Area', 'Year'], how='inner')
-regions = latest_data['Region/Country/Area'].unique()
-
 # Load regions data
 csv_path2 = 'https://raw.githubusercontent.com/TouradBaba/women-parliament-representation-dashboard/main/data/regions_data.csv'
 df2 = pd.read_csv(csv_path2, encoding='latin1')
-latest_years_regions = df2.groupby('Region')['Year'].max().reset_index()
-latest_data_regions = pd.merge(df2, latest_years_regions, on=['Region', 'Year'], how='inner')
-latest_data_regions_sorted = latest_data_regions.sort_values(by='Value', ascending=False)
 
 available_years = [2000, 2005, 2010, 2015, 2018, 2020, 2021, 2022, 2023]
 
@@ -62,7 +54,7 @@ app.layout = html.Div(
                         html.Div(id='country-details', className='details'),
                         dcc.Dropdown(
                             id='country-dropdown',
-                            options=[{'label': country, 'value': country} for country in regions],
+                            options=[{'label': country, 'value': country} for country in df['Region/Country/Area'].unique()],
                             placeholder="Select a country",
                             className='mb-3'
                         ),
@@ -122,16 +114,20 @@ app.layout = html.Div(
                 html.Div(
                     className='col-md-12 regions-bar-chart-container',
                     children=[
-                        dcc.Graph(
-                            id='regions-bar-chart',
-                            figure=px.bar(
-                                latest_data_regions_sorted,
-                                x='Region',
-                                y='Value',
-                                labels={'Value': 'Percentage (%)'},
-                                title='Women Representation in Parliaments by Region 2023',
-                                color_discrete_sequence=['steelblue']
-                            )
+                        html.P("Representation by Region Over Years", className='lead smaller-text',
+                               style={'fontSize': 25, 'textAlign': 'center'}),
+                        html.Div(
+                            children=[
+                                html.Button('Play', id='bar-play-pause-button', className='btn btn-primary mb-2 btn-lg')
+                            ],
+                            style={'textAlign': 'center', 'marginBottom': '10px'}
+                        ),
+                        dcc.Graph(id='regions-bar-chart'),
+                        dcc.Interval(
+                            id='bar-interval-component',
+                            interval=1000,
+                            n_intervals=0,
+                            disabled=True
                         )
                     ]
                 )
@@ -176,7 +172,7 @@ def update_line_chart_and_details(country, clickData, selected_years, current_dr
             )
             line_chart_style = {'display': 'block'}
 
-            latest_data_country = latest_data[latest_data['Region/Country/Area'] == country]
+            latest_data_country = df[df['Region/Country/Area'] == country]
             if not latest_data_country.empty:
                 percentage = latest_data_country['Value'].values[0]
                 latest_year_country = latest_data_country['Year'].values[0]
@@ -196,9 +192,9 @@ def update_line_chart_and_details(country, clickData, selected_years, current_dr
 )
 def update_map(selected_country):
     if selected_country:
-        selected_data_map = latest_data[latest_data['Region/Country/Area'] == selected_country]
+        selected_data_map = df[df['Region/Country/Area'] == selected_country]
     else:
-        selected_data_map = latest_data
+        selected_data_map = df
 
     map_figure = px.choropleth(
         selected_data_map,
@@ -243,7 +239,7 @@ def update_map(selected_country):
 )
 def update_flat_map(n_intervals):
     if n_intervals == 0:
-        current_year = 2018 # Default year
+        current_year = 2018  # Default year
     else:
         year_index = n_intervals % len(available_years)
         current_year = available_years[year_index]
@@ -275,16 +271,58 @@ def update_flat_map(n_intervals):
 
 
 @app.callback(
-    [Output('interval-component', 'disabled'),
-     Output('play-pause-button', 'children')],
-    [Input('play-pause-button', 'n_clicks')],
-    [State('interval-component', 'disabled')]
+    Output('regions-bar-chart', 'figure'),
+    Input('bar-interval-component', 'n_intervals')
 )
-def play_pause_animation(n_clicks, is_disabled):
-    if n_clicks is None:
-        return True, 'Play'
+def update_bar_chart(n_intervals):
+    if n_intervals == 0:
+        current_year = 2000
+    else:
+        year_index = n_intervals % len(available_years)
+        current_year = available_years[year_index]
 
-    return not is_disabled, 'Pause' if is_disabled else 'Play'
+    filtered_data2 = df2[df2['Year'] == current_year]
+    sorted_data2 = filtered_data2.sort_values(by='Value', ascending=False)
+
+    bar_chart_figure = px.bar(
+        sorted_data2,
+        x='Region',  # Change the x-axis to use "Region"
+        y='Value',
+        title=f'Women Representation by Region in {current_year}',
+        labels={'Region': 'Region', 'Value': 'Percentage (%)'}
+    )
+
+    bar_chart_figure.update_layout(
+        xaxis_title='Region',
+        yaxis_title='Percentage (%)',
+        xaxis_tickangle=45
+    )
+
+    return bar_chart_figure
+
+
+@app.callback(
+    Output('interval-component', 'disabled'),
+    Output('play-pause-button', 'children'),
+    Input('play-pause-button', 'n_clicks'),
+    State('interval-component', 'disabled')
+)
+def toggle_animation(n_clicks, is_disabled):
+    if n_clicks:
+        return not is_disabled, "Pause" if is_disabled else "Play"
+    return is_disabled, "Play" if is_disabled else "Pause"
+
+
+@app.callback(
+    Output('bar-interval-component', 'disabled'),
+    Output('bar-play-pause-button', 'children'),
+    Input('bar-play-pause-button', 'n_clicks'),
+    State('bar-interval-component', 'disabled')
+)
+def toggle_bar_animation(n_clicks, is_disabled):
+    if n_clicks:
+        return not is_disabled, "Pause" if is_disabled else "Play"
+    return is_disabled, "Play" if is_disabled else "Pause"
 
 
 if __name__ == '__main__':
