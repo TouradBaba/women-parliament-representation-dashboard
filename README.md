@@ -25,8 +25,6 @@ The data used in this dashboard is sourced from the United Nations Statistics Di
 
 ```
 women-parliament-representation-dashboard/
-│────assets/
-├──── bootstrap.css
 ├──── app.py
 │──── requirements.txt
 │──── data_preparation.ipynb
@@ -43,7 +41,6 @@ women-parliament-representation-dashboard/
 └── .gitattributes
 
 ```
-- **assets/**: Stores the slate theme from [Bootswatch](https://bootswatch.com/).
 - **app.py**: Python script for running the Dash application.
 - **requirements.txt**: List of Python dependencies required for the application.
 - **data/**: Contains the datasets used in the dashboard.
