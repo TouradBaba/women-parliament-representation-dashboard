@@ -34,7 +34,8 @@ women-parliament-representation-dashboard/
 ├── images/
 │   ├── dashboard_preview.png
 │   ├── dashboard_preview2.png
-│   └── percentage_over_years.gif
+│   ├── percentage_over_years.gif
+│   └── regions_over_years.gif
 ├── data_preparation.ipynb
 ├── Procfile
 ├── .gitignore
@@ -49,6 +50,7 @@ women-parliament-representation-dashboard/
   - **dashboard_preview.png**: Preview image of the dashboard.
   - **dashboard_preview.png2**: Preview image of the dashboard when selecting a country.
   - **percentage_over_years.gif**: GIF that shows variations in percentage over the years.
+  - **regions_over_years.gif**: GIF that shows variations in regions over the years.
 - **data_preparation.ipynb**: Jupyter notebook for data preparation and exploration.
 - **Procfile**: File for deploying the app on Heroku.
 - **.gitignore**: File to specify which files and directories to ignore.
@@ -56,11 +58,14 @@ women-parliament-representation-dashboard/
 
 ## Visual Preview
 
-### Percentage Over Years
+### Percentage Over Years for Countries
 ![Dashboard Preview](images/percentage_over_years.gif)
 
 ### Dashboard Preview with Country Selection
 ![Dashboard Preview](images/dashboard_preview2.png)
+
+### Percentage Over Years for regions
+![Dashboard Preview](images/regions_over_years.gif)
 
 ## Installation and Setup
 
