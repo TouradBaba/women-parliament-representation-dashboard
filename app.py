@@ -28,7 +28,7 @@ app = dash.Dash(__name__, suppress_callback_exceptions=True)
 server = app.server
 
 # Load figure template
-load_figure_template("yeti")
+load_figure_template("darkly")
 
 app.layout = html.Div(
     className='container-fluid',
