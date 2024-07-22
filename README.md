@@ -49,7 +49,7 @@ women-parliament-representation-dashboard/
   - **dashboard_preview.png**: Preview image of the dashboard.
   - **dashboard_preview.png2**: Preview image of the dashboard when selecting a country.
   - **percentage_over_years.gif**: GIF that shows variations in percentage over the years.
-- **data_preparation.ipynb**: Jupyter notebook for data cleaning, preparation and exploration.
+- **data_preparation.ipynb**: Jupyter notebook for data preparation and exploration.
 - **Procfile**: File for deploying the app on Heroku.
 - **.gitignore**: File to specify which files and directories to ignore.
 - **.gitattributes**: File to specify attributes for Git.
