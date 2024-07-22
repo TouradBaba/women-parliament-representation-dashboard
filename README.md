@@ -8,6 +8,8 @@ You can access the live dashboard hosted on:
 - [Heroku](https://dash-app2-a77ab9dd53b7.herokuapp.com/)
 - [PythonAnywhere](https://touradb.pythonanywhere.com/)
 
+Note: When accessing the app for the first time, figures may take up to 1-2 minutes to load. Reloading the page after this initial delay will ensure the figures appear correctly.
+
 ## Features
 
 - Interactive map displaying women's representation data by country.
