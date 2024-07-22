@@ -287,4 +287,4 @@ def play_pause_animation(n_clicks, is_disabled):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
