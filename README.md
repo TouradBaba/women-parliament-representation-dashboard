@@ -40,6 +40,19 @@ women-parliament-representation-dashboard/
 ├── .gitignore
 └── .gitattributes
 ```
+- **app.py**: Python script for running the Dash application.
+- **requirements.txt**: List of Python dependencies required for the application.
+- **data/**: Contains the datasets used in the dashboard.
+  - **cleaned_df.csv**: Dataset with cleaned data, including coordinates.
+  - **regions_data.csv**: Dataset specifically for regional data used in the bar chart.
+- **images/**: Contains scrrenshots of the app.
+  - **dashboard_preview.png**: Preview image of the dashboard.
+  - **dashboard_preview.png2**: Preview image of the dashboard when selecting a country.
+  - **percentage_over_years.gif**: GIF that shows variations in percentage over the years.
+- **data_preparation.ipynb**: Jupyter notebook for data cleaning, preparation and exploration.
+- **Procfile**: File for deploying the app on Heroku.
+- **.gitignore**: File to specify which files and directories to ignore.
+- **.gitattributes**: File to specify attributes for Git.
 
 ## Visual Preview
 
