@@ -76,7 +76,8 @@ app.layout = html.Div(
                                 marks={year: str(year) for year in available_years},
                                 step=None,
                                 className='mb-3'
-                            )
+                            ),
+                            style={'marginTop': '30px'}  # Add space between dropdown and slider
                         )
                     ]
                 )
