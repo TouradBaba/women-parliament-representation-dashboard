@@ -24,7 +24,8 @@ latest_data_regions_sorted = latest_data_regions.sort_values(by='Value', ascendi
 available_years = [2000, 2005, 2010, 2015, 2018, 2020, 2021, 2022, 2023]
 
 # Initialize the app
-app = dash.Dash(__name__, suppress_callback_exceptions=True)
+app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[
+    "https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/slate/bootstrap.min.css"])
 server = app.server
 
 # Load figure template
