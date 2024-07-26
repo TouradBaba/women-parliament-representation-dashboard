@@ -15,6 +15,12 @@ df2 = pd.read_csv(csv_path2, encoding='latin1')
 
 available_years = [2000, 2005, 2010, 2015, 2018, 2020, 2021, 2022, 2023]
 
+# Find the latest year for each country
+latest_years_countries = df.groupby('Region/Country/Area')['Year'].max().reset_index()
+
+# Merge to get the latest data for each country
+latest_data = pd.merge(df, latest_years_countries, on=['Region/Country/Area', 'Year'], how='inner')
+
 # Initialize the app
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[
     "https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/slate/bootstrap.min.css"])
@@ -172,7 +178,7 @@ def update_line_chart_and_details(country, clickData, selected_years, current_dr
             )
             line_chart_style = {'display': 'block'}
 
-            latest_data_country = df[df['Region/Country/Area'] == country]
+            latest_data_country = latest_data[latest_data['Region/Country/Area'] == country]
             if not latest_data_country.empty:
                 percentage = latest_data_country['Value'].values[0]
                 latest_year_country = latest_data_country['Year'].values[0]
@@ -192,9 +198,9 @@ def update_line_chart_and_details(country, clickData, selected_years, current_dr
 )
 def update_map(selected_country):
     if selected_country:
-        selected_data_map = df[df['Region/Country/Area'] == selected_country]
+        selected_data_map = latest_data[latest_data['Region/Country/Area'] == selected_country]
     else:
-        selected_data_map = df
+        selected_data_map = latest_data
 
     map_figure = px.choropleth(
         selected_data_map,
