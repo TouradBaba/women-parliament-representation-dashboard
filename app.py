@@ -6,11 +6,13 @@ import pandas as pd
 from dash_bootstrap_templates import load_figure_template
 
 # Load data
-csv_path = 'https://raw.githubusercontent.com/TouradBaba/women-parliament-representation-dashboard/main/data/cleaned_df.csv'
+csv_path = ('https://raw.githubusercontent.com/TouradBaba/women-parliament-representation-dashboard/'
+            'main/data/cleaned_df.csv')
 df = pd.read_csv(csv_path, encoding='latin1')
 
 # Load regions data
-csv_path2 = 'https://raw.githubusercontent.com/TouradBaba/women-parliament-representation-dashboard/main/data/regions_data.csv'
+csv_path2 = ('https://raw.githubusercontent.com/TouradBaba/women-parliament-representation-dashboard/'
+             'main/data/regions_data.csv')
 df2 = pd.read_csv(csv_path2, encoding='latin1')
 
 available_years = [2000, 2005, 2010, 2015, 2018, 2020, 2021, 2022, 2023]
@@ -38,7 +40,8 @@ app.layout = html.Div(
                 html.H1("Women Representation in Parliaments Dashboard", className='display-4',
                         style={'fontSize': 50, 'textAlign': 'center'}),
                 html.P(
-                    "Click on a country on the map or select it to see details and its representation in parliaments over time.",
+                    "Click on a country on the map or select it to see details and "
+                    "its representation in parliaments over time.",
                     className='lead', style={'textAlign': 'center'}
                 )
             ]
@@ -60,7 +63,8 @@ app.layout = html.Div(
                         html.Div(id='country-details', className='details'),
                         dcc.Dropdown(
                             id='country-dropdown',
-                            options=[{'label': country, 'value': country} for country in df['Region/Country/Area'].unique()],
+                            options=[{'label': country, 'value': country} for country in
+                                     df['Region/Country/Area'].unique()],
                             placeholder="Select a country",
                             className='mb-3'
                         ),
@@ -103,7 +107,7 @@ app.layout = html.Div(
                         dcc.Graph(id='flat-map', style={'height': '800px'}),
                         dcc.Interval(
                             id='interval-component',
-                            interval=1000,  # in milliseconds
+                            interval=1500,
                             n_intervals=0,
                             disabled=True
                         )
@@ -131,7 +135,7 @@ app.layout = html.Div(
                         dcc.Graph(id='regions-bar-chart'),
                         dcc.Interval(
                             id='bar-interval-component',
-                            interval=1000,
+                            interval=1500,
                             n_intervals=0,
                             disabled=True
                         )
@@ -245,7 +249,7 @@ def update_map(selected_country):
 )
 def update_flat_map(n_intervals):
     if n_intervals == 0:
-        current_year = 2018  # Default year
+        current_year = 2018
     else:
         year_index = n_intervals % len(available_years)
         current_year = available_years[year_index]
@@ -292,7 +296,7 @@ def update_bar_chart(n_intervals):
 
     bar_chart_figure = px.bar(
         sorted_data2,
-        x='Region',  # Change the x-axis to use "Region"
+        x='Region',
         y='Value',
         title=f'Women Representation by Region in {current_year}',
         labels={'Region': 'Region', 'Value': 'Percentage (%)'}
